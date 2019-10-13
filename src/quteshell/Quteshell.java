@@ -1,12 +1,10 @@
 package quteshell;
 
-import quteshell.commands.Clear;
-import quteshell.commands.Echo;
-import quteshell.commands.Help;
-import quteshell.commands.Welcome;
+import quteshell.commands.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Quteshell {
 
@@ -26,6 +24,7 @@ public class Quteshell {
     // Shell
     private boolean running = true;
     private boolean elevated = false;
+
     // Shell commands
     private final Command[] COMMANDS_ELEVATED = {
     };
@@ -33,8 +32,14 @@ public class Quteshell {
             new Welcome(),
             new Help(),
             new Clear(),
-            new Echo()
+            new Echo(),
+            new History(),
+            new Rerun(),
+            new Exit()
     };
+
+    // History
+    private ArrayList<String> history = new ArrayList<>();
 
     // UI
     private String name = "qute";
@@ -106,6 +111,13 @@ public class Quteshell {
     }
 
     /**
+     * This function stops the shell.
+     */
+    public void finish() {
+        running = false;
+    }
+
+    /**
      * This function prints to the host's console.
      *
      * @param text Text to print
@@ -124,11 +136,23 @@ public class Quteshell {
         prompt();
     }
 
+    /**
+     * This function returns the command list for the current context.
+     * @return Commands
+     */
     public Command[] commands() {
         if (elevated)
             return COMMANDS_ELEVATED;
         else
             return COMMANDS_UNELEVATED;
+    }
+
+    /**
+     * This function returns the command history.
+     * @return History
+     */
+    public ArrayList<String> history(){
+        return history;
     }
 
     /**
@@ -148,12 +172,14 @@ public class Quteshell {
                 }
             }
             if (run != null) {
-                String argument = null;
-                if (split.length > 1)
-                    argument = split[1];
-                run.execute(this, argument);
+                // Check if command is storable and store it in history
+                if (run.isStorable())
+                    history.add(input);
+                // Execute the command
+                run.execute(this, split.length > 1 ? split[1] : null);
                 print("Command '" + split[0] + "' handled.");
             } else {
+                // Write an error message to the socket
                 writeln(name + ": " + split[0] + ": not handled");
                 print("Command '" + split[0] + "' not handled.");
             }

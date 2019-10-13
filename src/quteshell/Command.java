@@ -9,4 +9,8 @@ public class Command {
     public String getName() {
         return getClass().getSimpleName().toLowerCase();
     }
+
+    public boolean isStorable() {
+        return true;
+    }
 }
