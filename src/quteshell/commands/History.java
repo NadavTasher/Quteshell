@@ -3,6 +3,7 @@ package quteshell.commands;
 import quteshell.Command;
 import quteshell.Quteshell;
 
+@Command.Description("The history command lists the previously ran commands.")
 public class History extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {

@@ -3,6 +3,7 @@ package quteshell.commands;
 import quteshell.Command;
 import quteshell.Quteshell;
 
+@Command.Description("The welcome command displays a welcome message.")
 public class Welcome extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {

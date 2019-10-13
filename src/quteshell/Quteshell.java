@@ -3,6 +3,7 @@ package quteshell;
 import quteshell.commands.*;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -138,6 +139,7 @@ public class Quteshell {
 
     /**
      * This function returns the command list for the current context.
+     *
      * @return Commands
      */
     public Command[] commands() {
@@ -149,9 +151,10 @@ public class Quteshell {
 
     /**
      * This function returns the command history.
+     *
      * @return History
      */
-    public ArrayList<String> history(){
+    public ArrayList<String> history() {
         return history;
     }
 
@@ -173,7 +176,13 @@ public class Quteshell {
             }
             if (run != null) {
                 // Check if command is storable and store it in history
-                if (run.isStorable())
+                boolean store = true;
+                for (Annotation annotation : run.getClass().getAnnotations()) {
+                    if (annotation instanceof Command.Anonymous) {
+                        store = false;
+                    }
+                }
+                if (store)
                     history.add(input);
                 // Execute the command
                 run.execute(this, split.length > 1 ? split[1] : null);
