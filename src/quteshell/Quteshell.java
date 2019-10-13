@@ -1,5 +1,8 @@
 package quteshell;
 
+import quteshell.commands.Clear;
+import quteshell.commands.Echo;
+import quteshell.commands.Help;
 import quteshell.commands.Welcome;
 
 import java.io.*;
@@ -25,10 +28,12 @@ public class Quteshell {
     private boolean elevated = false;
     // Shell commands
     private final Command[] COMMANDS_ELEVATED = {
-            new Welcome()
     };
     private final Command[] COMMANDS_UNELEVATED = {
-            new Welcome()
+            new Welcome(),
+            new Help(),
+            new Clear(),
+            new Echo()
     };
 
     // UI
@@ -119,6 +124,13 @@ public class Quteshell {
         prompt();
     }
 
+    public Command[] commands() {
+        if (elevated)
+            return COMMANDS_ELEVATED;
+        else
+            return COMMANDS_UNELEVATED;
+    }
+
     /**
      * This function evaluates the input and executes the command.
      *
@@ -129,19 +141,10 @@ public class Quteshell {
         if (input.length() > 0) {
             String[] split = input.split(" ", 2);
             Command run = null;
-            if (elevated) {
-                for (Command command : COMMANDS_ELEVATED) {
-                    if (command.getName().equals(split[0])) {
-                        run = command;
-                        break;
-                    }
-                }
-            } else {
-                for (Command command : COMMANDS_UNELEVATED) {
-                    if (command.getName().equals(split[0])) {
-                        run = command;
-                        break;
-                    }
+            for (Command command : commands()) {
+                if (command.getName().equals(split[0])) {
+                    run = command;
+                    break;
                 }
             }
             if (run != null) {
@@ -171,6 +174,13 @@ public class Quteshell {
      */
     public void clear() {
         write("\033[2J\033[H");
+    }
+
+    /**
+     * This function writes a newline to the socket.
+     */
+    public void writeln() {
+        writeln("");
     }
 
     /**
