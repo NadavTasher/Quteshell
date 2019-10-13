@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class Quteshell {
 
     // Constants
-    private static final String PROMPT_UNELEVATED = ":$>";
-    private static final String PROMPT_ELEVATED = ":#>";
+    private static final String PROMPT_DE_ESCALATED = ":$>";
+    private static final String PROMPT_ESCALATED = ":#>";
 
     // ID & Host access
     private String id = Toolbox.random(10);
@@ -24,18 +24,19 @@ public class Quteshell {
 
     // Shell
     private boolean running = true;
-    private boolean elevated = false;
+    private boolean escelated = false;
 
     // Shell commands
-    private final Command[] COMMANDS_ELEVATED = {
+    private final Command[] COMMANDS_ESCALATED = {
     };
-    private final Command[] COMMANDS_UNELEVATED = {
+    private final Command[] COMMANDS_DE_ESCALATED = {
             new Welcome(),
             new Help(),
             new Clear(),
             new Echo(),
             new History(),
             new Rerun(),
+            new ID(),
             new Exit()
     };
 
@@ -63,6 +64,14 @@ public class Quteshell {
     public Quteshell(Socket socket, String name) {
         this.socket = socket;
         this.name = name;
+    }
+
+    /**
+     * This function returns the Quteshell ID.
+     * @return ID
+     */
+    public String id(){
+        return id;
     }
 
     /**
@@ -143,10 +152,10 @@ public class Quteshell {
      * @return Commands
      */
     public Command[] commands() {
-        if (elevated)
-            return COMMANDS_ELEVATED;
+        if (escelated)
+            return COMMANDS_ESCALATED;
         else
-            return COMMANDS_UNELEVATED;
+            return COMMANDS_DE_ESCALATED;
     }
 
     /**
@@ -200,7 +209,7 @@ public class Quteshell {
      */
     public void prompt() {
         write(name);
-        write(elevated ? PROMPT_ELEVATED : PROMPT_UNELEVATED);
+        write(escelated ? PROMPT_ESCALATED : PROMPT_DE_ESCALATED);
         write(" ");
     }
 
