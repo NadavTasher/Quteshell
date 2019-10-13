@@ -1,5 +1,7 @@
 package quteshell;
 
+import quteshell.commands.Welcome;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -21,6 +23,13 @@ public class Quteshell {
     // Shell
     private boolean running = true;
     private boolean elevated = false;
+    // Shell commands
+    private final Command[] COMMANDS_ELEVATED = {
+            new Welcome()
+    };
+    private final Command[] COMMANDS_UNELEVATED = {
+            new Welcome()
+    };
 
     // UI
     private String name = "qute";
@@ -51,24 +60,42 @@ public class Quteshell {
      * @return Quteshell instance
      */
     public Quteshell begin() {
-        try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException e) {
-            reader = null;
-            writer = null;
-            print("Failed to initialize I/O streams.");
-        }
-        if (reader != null && writer != null) {
-            thread = new Thread(() -> {
-                try {
-                    if (reader.ready())
-                        read(reader.readLine());
-                } catch (IOException e) {
-                    print("Failed to read input stream.");
-                }
-            });
-            thread.start();
+        if (thread == null) {
+            try {
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            } catch (IOException e) {
+                reader = null;
+                writer = null;
+                print("Failed to initialize I/O streams.");
+            }
+            if (reader != null && writer != null) {
+                thread = new Thread(() -> {
+                    try {
+                        // Initialize a welcome message
+                        read("welcome");
+                        // Begin listening
+                        while (running) {
+                            try {
+                                if (reader.ready())
+                                    read(reader.readLine());
+                                Thread.sleep(10);
+                            } catch (IOException e) {
+                                print("Failed to read input stream.");
+                            } catch (InterruptedException e) {
+                                print("Failed to sleep.");
+                            }
+                        }
+                        // Finish listening
+                        print("Finished");
+                        socket.close();
+                    } catch (Exception e) {
+                        print("Failed to close socket.");
+                    }
+                    thread.stop();
+                });
+                thread.start();
+            }
         }
         return this;
     }
@@ -97,14 +124,43 @@ public class Quteshell {
      *
      * @param input Input from the socket
      */
-    private void execute(String input) {
-
+    public void execute(String input) {
+        print("Evaluating '" + input + "'");
+        if (input.length() > 0) {
+            String[] split = input.split(" ", 2);
+            Command run = null;
+            if (elevated) {
+                for (Command command : COMMANDS_ELEVATED) {
+                    if (command.getName().equals(split[0])) {
+                        run = command;
+                        break;
+                    }
+                }
+            } else {
+                for (Command command : COMMANDS_UNELEVATED) {
+                    if (command.getName().equals(split[0])) {
+                        run = command;
+                        break;
+                    }
+                }
+            }
+            if (run != null) {
+                String argument = null;
+                if (split.length > 1)
+                    argument = split[1];
+                run.execute(this, argument);
+                print("Command '" + split[0] + "' handled.");
+            } else {
+                writeln(name + ": " + split[0] + ": not handled");
+                print("Command '" + split[0] + "' not handled.");
+            }
+        }
     }
 
     /**
      * This function prints the prompt to the socket (qute:$>).
      */
-    private void prompt() {
+    public void prompt() {
         write(name);
         write(elevated ? PROMPT_ELEVATED : PROMPT_UNELEVATED);
         write(" ");
@@ -113,7 +169,7 @@ public class Quteshell {
     /**
      * This function clears the client's terminal.
      */
-    private void clear() {
+    public void clear() {
         write("\033[2J\033[H");
     }
 
@@ -122,7 +178,7 @@ public class Quteshell {
      *
      * @param output Output
      */
-    private void writeln(String output) {
+    public void writeln(String output) {
         write(output + "\n");
     }
 
@@ -131,7 +187,7 @@ public class Quteshell {
      *
      * @param output Output
      */
-    private void write(String output) {
+    public void write(String output) {
         try {
             writer.write(output);
             writer.flush();
