@@ -124,9 +124,9 @@ public class Quteshell {
             }
             if (reader != null && writer != null) {
                 thread = new Thread(() -> {
+                    // Initialize a welcome message
+                    read("welcome");
                     try {
-                        // Initialize a welcome message
-                        read("welcome");
                         // Begin listening
                         while (running) {
                             try {
@@ -139,13 +139,16 @@ public class Quteshell {
                                 print("Failed to sleep.");
                             }
                         }
-                        // Finish listening
-                        print("Finished");
+                    } catch (Exception e) {
+                        print("Unrecoverable exception: " + e.getMessage());
+                    }
+                    // Finish listening
+                    print("Finished");
+                    try {
                         socket.close();
                     } catch (Exception e) {
                         print("Failed to close socket.");
                     }
-                    thread.stop();
                 });
                 thread.start();
             }
