@@ -141,7 +141,7 @@ public class Quteshell {
                             }
                         }
                     } catch (Exception e) {
-                        print("Unrecoverable exception: " + e.getMessage());
+                        print("Unrecoverable exception: " + e.toString());
                     }
                     // Finish listening
                     print("Finished");
@@ -187,8 +187,14 @@ public class Quteshell {
      * This function prints the prompt to the socket (qute:1>).
      */
     private void prompt() {
+        write("\033[1;32m");
         write(name);
-        write(":" + elevation + ">");
+        write("\033[0m");
+        write(":");
+        write("\033[1;34m");
+        write(String.valueOf(elevation));
+        write("\033[0m");
+        write(">");
         write(" ");
     }
 
