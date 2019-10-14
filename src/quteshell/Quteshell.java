@@ -22,7 +22,7 @@ public class Quteshell {
 
     // Shell
     private boolean running = true;
-    private int elevation = 1;
+    private int elevation = Elevation.DEFAULT;
 
     // Shell getCommands
     private final Command[] COMMANDS = {
