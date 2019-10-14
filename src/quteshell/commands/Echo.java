@@ -6,7 +6,7 @@ import quteshell.command.Elevation;
 
 @Elevation(Elevation.DEFAULT)
 @Help.Description("The echo command prints back what you type in.")
-public class Echo extends Command {
+public class Echo implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
         shell.writeln(arguments);

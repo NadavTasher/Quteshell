@@ -6,7 +6,7 @@ import quteshell.command.Elevation;
 
 @Elevation(Elevation.DEFAULT)
 @Help.Description("The welcome command displays a welcome message.")
-public class Welcome extends Command {
+public class Welcome implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
         shell.writeln("╔═══════════════════════════════════╗");
