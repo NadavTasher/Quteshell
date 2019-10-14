@@ -80,8 +80,8 @@ public class Quteshell {
         ArrayList<Command> commands = new ArrayList<>();
         for (Command command : COMMANDS) {
             int elevation = command.getElevation();
-            if(elevation!=Elevation.NONE){
-                if (elevation == Elevation.ALL || elevation >= this.elevation) {
+            if (elevation != Elevation.NONE) {
+                if (elevation == Elevation.ALL || this.elevation >= elevation) {
                     commands.add(command);
                 }
             }
