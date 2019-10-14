@@ -5,6 +5,8 @@ import quteshell.command.Command;
 import quteshell.command.Elevation;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 @Elevation(Elevation.ALL)
@@ -51,6 +53,7 @@ public class Help extends Command {
         }
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface Description {
         String value();
     }

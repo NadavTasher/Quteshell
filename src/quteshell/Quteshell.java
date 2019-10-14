@@ -24,7 +24,7 @@ public class Quteshell {
     private boolean running = true;
     private int elevation = Elevation.DEFAULT;
 
-    // Shell getCommands
+    // Shell commands
     private final Command[] COMMANDS = {
             new Welcome(),
             new Help(),
