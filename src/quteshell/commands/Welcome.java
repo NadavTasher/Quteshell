@@ -1,9 +1,11 @@
 package quteshell.commands;
 
-import quteshell.Command;
+import quteshell.command.Command;
 import quteshell.Quteshell;
+import quteshell.command.Elevation;
 
-@Command.Description("The welcome command displays a welcome message.")
+@Elevation(Elevation.DEFAULT)
+@Help.Description("The welcome command displays a welcome message.")
 public class Welcome extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {

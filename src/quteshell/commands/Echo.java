@@ -1,9 +1,11 @@
 package quteshell.commands;
 
-import quteshell.Command;
+import quteshell.command.Command;
 import quteshell.Quteshell;
+import quteshell.command.Elevation;
 
-@Command.Description("The echo command prints back what you type in.")
+@Elevation(Elevation.DEFAULT)
+@Help.Description("The echo command prints back what you type in.")
 public class Echo extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {

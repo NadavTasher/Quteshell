@@ -1,9 +1,11 @@
 package quteshell.commands;
 
-import quteshell.Command;
+import quteshell.command.Command;
 import quteshell.Quteshell;
+import quteshell.command.Elevation;
 
-@Command.Description("The exit command closes the shell and disconnects.")
+@Elevation(Elevation.ALL)
+@Help.Description("The exit command closes the shell and disconnects.")
 public class Exit extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {

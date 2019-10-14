@@ -1,24 +1,27 @@
 package quteshell.commands;
 
-import quteshell.Command;
 import quteshell.Quteshell;
+import quteshell.command.Command;
+import quteshell.command.Elevation;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 
-@Command.Description("The help command lists all commands, or a command description.")
+@Elevation(Elevation.ALL)
+@Help.Description("The help command lists all commands, or a command description.")
 public class Help extends Command {
 
     private static final int COLUMNS = 3;
 
     @Override
     public void execute(Quteshell shell, String arguments) {
-        Command[] commands = shell.commands();
+        ArrayList<Command> commands = shell.getCommands();
         if (arguments == null) {
             shell.writeln("List of available commands:");
-            for (int c = 0; c < commands.length; c += COLUMNS) {
+            for (int c = 0; c < commands.size(); c += COLUMNS) {
                 for (int r = 0; r < COLUMNS; r++) {
-                    if (c + r < commands.length) {
-                        shell.write(commands[c + r].getName());
+                    if (c + r < commands.size()) {
+                        shell.write(commands.get(c + r).getName());
                     }
                     shell.write("\t\t");
                 }
@@ -37,8 +40,8 @@ public class Help extends Command {
             if (help != null) {
                 text = "No description available";
                 for (Annotation annotation : help.getClass().getAnnotations()) {
-                    if (annotation instanceof Description) {
-                        text = ((Description) annotation).value();
+                    if (annotation instanceof Help.Description) {
+                        text = ((Help.Description) annotation).value();
                     }
                 }
             } else {
@@ -46,5 +49,9 @@ public class Help extends Command {
             }
             shell.writeln(text);
         }
+    }
+
+    public @interface Description {
+        String value();
     }
 }

@@ -1,12 +1,14 @@
 package quteshell.commands;
 
-import quteshell.Command;
+import quteshell.command.Command;
 import quteshell.Quteshell;
+import quteshell.command.Elevation;
 
-@Command.Description("The id command prints the ID of the shell.")
+@Elevation(Elevation.DEFAULT)
+@Help.Description("The id command prints the ID of the shell.")
 public class ID extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
-        shell.writeln(shell.id());
+        shell.writeln(shell.getID());
     }
 }

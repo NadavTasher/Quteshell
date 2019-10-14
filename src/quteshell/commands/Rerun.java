@@ -1,12 +1,14 @@
 package quteshell.commands;
 
-import quteshell.Command;
 import quteshell.Quteshell;
+import quteshell.command.Command;
+import quteshell.command.Elevation;
 
 import java.util.ArrayList;
 
-@Command.Anonymous
-@Command.Description("The rerun command reruns the last command, or the given number of commands.")
+@Elevation(Elevation.DEFAULT)
+@History.Exclude
+@Help.Description("The rerun command reruns the last command, or the given number of commands.")
 public class Rerun extends Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
@@ -18,7 +20,7 @@ public class Rerun extends Command {
                 shell.writeln("Not a number!");
             }
         }
-        ArrayList<String> history = shell.history();
+        ArrayList<String> history = shell.getHistory();
         int start = history.size() - rerun;
         int end = history.size();
         for (int c = ((start < 0) ? 0 : start); c < end; c++) {

@@ -1,5 +1,7 @@
 package quteshell;
 
+import quteshell.command.Command;
+import quteshell.command.Elevation;
 import quteshell.commands.*;
 
 import java.io.*;
@@ -8,10 +10,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Quteshell {
-
-    // Constants
-    private static final String PROMPT_DE_ESCALATED = ":$>";
-    private static final String PROMPT_ESCALATED = ":#>";
 
     // ID & Host access
     private String id = Toolbox.random(10);
@@ -24,12 +22,10 @@ public class Quteshell {
 
     // Shell
     private boolean running = true;
-    private boolean escelated = false;
+    private int elevation = 1;
 
-    // Shell commands
-    private final Command[] COMMANDS_ESCALATED = {
-    };
-    private final Command[] COMMANDS_DE_ESCALATED = {
+    // Shell getCommands
+    private final Command[] COMMANDS = {
             new Welcome(),
             new Help(),
             new Clear(),
@@ -68,10 +64,45 @@ public class Quteshell {
 
     /**
      * This function returns the Quteshell ID.
+     *
      * @return ID
      */
-    public String id(){
+    public String getID() {
         return id;
+    }
+
+    /**
+     * This function returns the command list for the current elevation.
+     *
+     * @return Commands
+     */
+    public ArrayList<Command> getCommands() {
+        ArrayList<Command> commands = new ArrayList<>();
+        for (Command command : COMMANDS) {
+            int elevation = command.getElevation();
+            if (elevation >= Elevation.ALL || elevation >= this.elevation) {
+                commands.add(command);
+            }
+        }
+        return commands;
+    }
+
+    /**
+     * This function returns the command getHistory.
+     *
+     * @return History
+     */
+    public ArrayList<String> getHistory() {
+        return history;
+    }
+
+    /**
+     * This function returns the shell's elevation.
+     *
+     * @return Elevation
+     */
+    public int getElevation() {
+        return elevation;
     }
 
     /**
@@ -147,24 +178,12 @@ public class Quteshell {
     }
 
     /**
-     * This function returns the command list for the current context.
-     *
-     * @return Commands
+     * This function prints the prompt to the socket (qute:1>).
      */
-    public Command[] commands() {
-        if (escelated)
-            return COMMANDS_ESCALATED;
-        else
-            return COMMANDS_DE_ESCALATED;
-    }
-
-    /**
-     * This function returns the command history.
-     *
-     * @return History
-     */
-    public ArrayList<String> history() {
-        return history;
+    private void prompt() {
+        write(name);
+        write(":" + elevation + ">");
+        write(" ");
     }
 
     /**
@@ -177,17 +196,17 @@ public class Quteshell {
         if (input.length() > 0) {
             String[] split = input.split(" ", 2);
             Command run = null;
-            for (Command command : commands()) {
+            for (Command command : getCommands()) {
                 if (command.getName().equals(split[0])) {
                     run = command;
                     break;
                 }
             }
             if (run != null) {
-                // Check if command is storable and store it in history
+                // Check if command is storable and store it in getHistory
                 boolean store = true;
                 for (Annotation annotation : run.getClass().getAnnotations()) {
-                    if (annotation instanceof Command.Anonymous) {
+                    if (annotation instanceof History.Exclude) {
                         store = false;
                     }
                 }
@@ -202,15 +221,6 @@ public class Quteshell {
                 print("Command '" + split[0] + "' not handled.");
             }
         }
-    }
-
-    /**
-     * This function prints the prompt to the socket (qute:$>).
-     */
-    public void prompt() {
-        write(name);
-        write(escelated ? PROMPT_ESCALATED : PROMPT_DE_ESCALATED);
-        write(" ");
     }
 
     /**
