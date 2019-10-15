@@ -8,9 +8,15 @@ Quteshell (with a spelling mistake) is a Java based TCP/IP socketed shell.
 
 ## Usage
 
+Opening a shell:
 ```java
 Quteshell shell = new Quteshell(new ServerSocket(PORT).accept());
 shell.begin();
+```
+
+Connecting to a shell:
+```bash
+nc address port
 ```
 
 ## Contributing
