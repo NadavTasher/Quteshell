@@ -3,6 +3,11 @@ import quteshell.Quteshell;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
+/**
+ * Copyright (c) 2019 Nadav Tasher
+ * https://github.com/NadavTasher/Quteshell/
+ **/
+
 public class Main {
 
     private static final int PORT = 7000;

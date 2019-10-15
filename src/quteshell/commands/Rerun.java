@@ -7,6 +7,11 @@ import quteshell.command.Exclude;
 
 import java.util.ArrayList;
 
+/**
+ * Copyright (c) 2019 Nadav Tasher
+ * https://github.com/NadavTasher/Quteshell/
+ **/
+
 @Elevation(Elevation.DEFAULT)
 @Exclude
 @Help.Description("The rerun command reruns the last command, or the given number of commands.")
