@@ -1,5 +1,6 @@
 package quteshell;
 
+import org.reflections.Reflections;
 import quteshell.command.Command;
 import quteshell.command.Elevation;
 import quteshell.command.Toolbox;
@@ -21,16 +22,18 @@ public class Quteshell extends Console {
     private static final String NAME = "qute";
 
     // Shell commands
-    private final Command[] COMMANDS = {
-            new Welcome(),
-            new Help(),
-            new Clear(),
-            new Echo(),
-            new History(),
-            new Rerun(),
-            new ID(),
-            new Exit()
-    };
+//    private final Command[] COMMANDS = {
+//            new Welcome(),
+//            new Help(),
+//            new Clear(),
+//            new Echo(),
+//            new History(),
+//            new Rerun(),
+//            new ID(),
+//            new Exit()
+//    };
+
+    private final ArrayList<Command> COMMANDS = new ArrayList<>();
 
     // ID & Host access
     private String id = random(14);
@@ -74,6 +77,14 @@ public class Quteshell extends Console {
      * @return Commands
      */
     public ArrayList<Command> getCommands() {
+        if (COMMANDS.isEmpty()){
+            for (Class<? extends Command> command:new Reflections("").getSubTypesOf(Command.class)) {
+                try{
+                    COMMANDS.add(command.newInstance());
+                }catch (Exception e){
+                }
+            }
+        }
         ArrayList<Command> commands = new ArrayList<>();
         for (Command command : COMMANDS) {
             int elevation = Toolbox.getElevation(command);

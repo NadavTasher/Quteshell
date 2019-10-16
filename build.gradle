@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes("Manifest-Version": "1.0", "Main-Class": "Main")
+    }
+}
+
+task buildRunnable(type: Jar) {
+    manifest.from jar.manifest
+    classifier = 'runnable'
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+
+dependencies {
+    compile 'org.reflections:reflections:0.9.11'
+}

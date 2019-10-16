@@ -48,8 +48,8 @@ public class Help implements Command {
             if (help != null) {
                 text = "No description available";
                 for (Annotation annotation : help.getClass().getAnnotations()) {
-                    if (annotation instanceof Help.Description) {
-                        text = ((Help.Description) annotation).value();
+                    if (annotation instanceof Description) {
+                        text = ((Description) annotation).value();
                     }
                 }
             } else {
