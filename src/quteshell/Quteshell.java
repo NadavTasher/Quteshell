@@ -48,10 +48,10 @@ public class Quteshell extends Console {
     private ArrayList<String> history = new ArrayList<>();
 
     // UI
-    private String name = NAME;
+    private String prompt = NAME;
 
     /**
-     * Default constructor without a name.
+     * Default constructor without a prompt.
      *
      * @param socket Client-Server socket
      */
@@ -102,6 +102,15 @@ public class Quteshell extends Console {
      */
     public int getElevation() {
         return elevation;
+    }
+
+    /**
+     * This function sets the shell's elevation.
+     *
+     * @param elevation Elevation
+     */
+    public void setElevation(int elevation) {
+        this.elevation = elevation;
     }
 
     /**
@@ -176,7 +185,7 @@ public class Quteshell extends Console {
      */
     private void read(String input) {
         execute(input);
-        prompt(name, elevation);
+        prompt(prompt, elevation);
     }
 
     /**
@@ -218,7 +227,7 @@ public class Quteshell extends Console {
                 print("Command '" + split[0] + "' handled");
             } else {
                 // Write an error message to the socket
-                writeln(name + ": " + split[0] + ": not handled");
+                writeln(prompt + ": " + split[0] + ": not handled");
                 print("Command '" + split[0] + "' not handled");
             }
         }
