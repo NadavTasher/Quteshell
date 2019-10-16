@@ -1,9 +1,9 @@
 package quteshell;
 
-import org.reflections.Reflections;
 import quteshell.command.Command;
 import quteshell.command.Elevation;
 import quteshell.command.Toolbox;
+import quteshell.commands.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,7 +21,16 @@ public class Quteshell extends Console {
     private static final String NAME = "qute";
 
     // Shell commands
-    private final ArrayList<Command> commands = new ArrayList<>();
+    private final Command[] COMMANDS = {
+            new Welcome(),
+            new Help(),
+            new Clear(),
+            new Echo(),
+            new History(),
+            new Rerun(),
+            new ID(),
+            new Exit()
+    };
 
     // ID & Host access
     private String id = random(14);
@@ -47,15 +56,7 @@ public class Quteshell extends Console {
      * @param socket Client-Server socket
      */
     public Quteshell(Socket socket) {
-        // Copy socket
         this.socket = socket;
-        // Find all commands
-        for (Class<? extends Command> c : new Reflections("").getSubTypesOf(Command.class)) {
-            try {
-                commands.add(c.newInstance());
-            } catch (Exception ignored) {
-            }
-        }
     }
 
     /**
@@ -74,7 +75,7 @@ public class Quteshell extends Console {
      */
     public ArrayList<Command> getCommands() {
         ArrayList<Command> commands = new ArrayList<>();
-        for (Command command : this.commands) {
+        for (Command command : COMMANDS) {
             int elevation = Toolbox.getElevation(command);
             if (elevation != Elevation.NONE) {
                 if (elevation == Elevation.ALL || this.elevation >= elevation) {
