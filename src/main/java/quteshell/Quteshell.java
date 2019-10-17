@@ -113,6 +113,15 @@ public class Quteshell extends Console {
     }
 
     /**
+     * This function returns whether the shell is running.
+     *
+     * @return Running
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
      * This function begins the shell's communication with the client.
      *
      * @return Quteshell instance
