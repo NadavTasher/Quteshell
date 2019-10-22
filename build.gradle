@@ -1,8 +1,11 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group = 'org.quteshell'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 
@@ -18,4 +21,56 @@ jar {
 
 dependencies {
     compile 'org.reflections:reflections:0.9.11'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'quteshell'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'Quteshell'
+                description = 'Quteshell is a Java based TCP/IP socketed shell library, for use in any project'
+                url = 'https://github.com/NadavTasher/Quteshell'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://choosealicense.com/licenses/mit/'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/NadavTasher/Quteshell.git'
+                    developerConnection = 'scm:git:git://github.com/NadavTasher/Quteshell.git'
+                    url = 'https://github.com/NadavTasher/Quteshell.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }

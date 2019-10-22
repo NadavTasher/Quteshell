@@ -387,7 +387,7 @@ public class Quteshell {
     /**
      * This function writes an output with a newline to the console.
      *
-     * @param output
+     * @param output Ouput
      */
     public void writeln(String output) {
         write(output);
