@@ -1,8 +1,6 @@
-package quteshell.command;
+package org.quteshell.command;
 
-import quteshell.Quteshell;
-
-import java.lang.annotation.Annotation;
+import org.quteshell.Quteshell;
 
 /**
  * Copyright (c) 2019 Nadav Tasher

@@ -1,8 +1,8 @@
-package quteshell.commands;
+package org.quteshell.commands;
 
-import quteshell.Quteshell;
-import quteshell.command.Command;
-import quteshell.command.Elevation;
+import org.quteshell.command.Elevation;
+import org.quteshell.Quteshell;
+import org.quteshell.command.Command;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;

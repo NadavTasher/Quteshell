@@ -1,4 +1,4 @@
-import quteshell.Quteshell;
+import org.quteshell.Quteshell;
 
 import java.net.ServerSocket;
 import java.util.ArrayList;

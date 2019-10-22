@@ -1,8 +1,8 @@
-package quteshell.commands;
+package org.quteshell.commands;
 
-import quteshell.Quteshell;
-import quteshell.command.Command;
-import quteshell.command.Elevation;
+import org.quteshell.Quteshell;
+import org.quteshell.command.Command;
+import org.quteshell.command.Elevation;
 
 /**
  * Copyright (c) 2019 Nadav Tasher

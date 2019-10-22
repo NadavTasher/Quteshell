@@ -1,4 +1,4 @@
-package quteshell.command;
+package org.quteshell.command;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
