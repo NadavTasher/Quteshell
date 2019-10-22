@@ -19,7 +19,7 @@ public class Main {
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {
-                quteshells.add(new Quteshell(serverSocket.accept()).begin());
+                quteshells.add(new Quteshell(serverSocket.accept()));
             }
         } catch (Exception e) {
             System.out.println("Host - " + e.getMessage());

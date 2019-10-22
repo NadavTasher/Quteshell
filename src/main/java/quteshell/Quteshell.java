@@ -3,9 +3,9 @@ package quteshell;
 import org.reflections.Reflections;
 import quteshell.command.Command;
 import quteshell.command.Elevation;
-import quteshell.command.Toolbox;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,6 +20,7 @@ public class Quteshell {
     public static class Configuration {
         private static String name = "qute";
         private static boolean logState = false;
+        private static boolean promptState = true;
         private static int IDLength = 14;
         private static int baseElevation = Elevation.DEFAULT;
 
@@ -79,6 +80,7 @@ public class Quteshell {
 
         /**
          * This function returns the logState state.
+         *
          * @return Log State
          */
         public static boolean getLogState() {
@@ -87,15 +89,77 @@ public class Quteshell {
 
         /**
          * This function enables/disables logging.
+         *
          * @param state State
          */
         public static void setLogState(boolean state) {
             Configuration.logState = state;
         }
+
+        /**
+         * This function returns the prompt state.
+         *
+         * @return Prompt State
+         */
+        public static boolean getPromptState() {
+            return promptState;
+        }
+
+        /**
+         * This function sets the prompt state.
+         *
+         * @param promptState Prompt State
+         */
+        public static void setPromptState(boolean promptState) {
+            Configuration.promptState = promptState;
+        }
     }
 
-    // ID & Host access
-    private String id = random(Configuration.getIDLength());
+    public static class Commands {
+        private static ArrayList<Class<? extends Command>> commands = new ArrayList<>();
+
+        static {
+            add(Quteshell.class);
+        }
+
+        public static void add(Class base) {
+            Commands.commands.addAll(new Reflections(base).getSubTypesOf(Command.class));
+        }
+
+        public static ArrayList<Class<? extends Command>> getCommands() {
+            return commands;
+        }
+
+        /**
+         * This function returns the execution name of a given command.
+         *
+         * @param command Command
+         * @return Name
+         */
+        public static String getName(Command command) {
+            return command.getClass().getSimpleName().toLowerCase();
+        }
+
+        /**
+         * This function returns the minimal elevation for a given command's execution.
+         *
+         * @param command Command
+         * @return Minimal Elevation
+         */
+        public static int getElevation(Command command) {
+            int minimal = Elevation.NONE;
+            for (Annotation annotation : command.getClass().getAnnotations()) {
+                if (annotation instanceof Elevation) {
+                    int elevation = ((Elevation) annotation).value();
+                    if (minimal < 0 || minimal > elevation) {
+                        minimal = elevation;
+                    }
+                }
+            }
+            return minimal;
+        }
+
+    }
 
     // Socket & I/O
     private Socket socket = null;
@@ -106,13 +170,10 @@ public class Quteshell {
     // Shell
     private boolean running = true;
     private int elevation = Configuration.getBaseElevation();
-    private final ArrayList<Command> commands = new ArrayList<>();
-
-    // History
+    private ArrayList<Command> commands = new ArrayList<>();
     private ArrayList<String> history = new ArrayList<>();
-
-    // UI
     private String prompt = Configuration.getName();
+    private String id = random(Configuration.getIDLength());
 
     /**
      * Default constructor without a prompt.
@@ -121,6 +182,14 @@ public class Quteshell {
      */
     public Quteshell(Socket socket) {
         this.socket = socket;
+        // Setup Commands
+        for (Class<? extends Command> command : Commands.getCommands()) {
+            try {
+                this.commands.add(command.newInstance());
+            } catch (Exception ignored) {
+            }
+        }
+        // Setup I/O
         try {
             reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
@@ -132,13 +201,14 @@ public class Quteshell {
         } finally {
             thread = new Thread(() -> {
                 // Initialize a welcome message
-                read("welcome");
+                input("welcome");
                 try {
                     // Begin listening
                     while (running) {
                         try {
-                            if (reader.ready())
-                                read(reader.readLine());
+                            if (reader.ready()) {
+                                input(reader.readLine());
+                            }
                             Thread.sleep(10);
                         } catch (IOException e) {
                             print("Failed to read input stream.");
@@ -171,43 +241,6 @@ public class Quteshell {
     }
 
     /**
-     * This function returns the command list for the current elevation.
-     *
-     * @return Commands
-     */
-    public ArrayList<Command> getCommands() {
-        // Initialize commands array
-        if (this.commands.isEmpty()) {
-            for (Class<? extends Command> command : new Reflections(getClass()).getSubTypesOf(Command.class)) {
-                try {
-                    this.commands.add(command.newInstance());
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        // Categorize commands by elevation
-        ArrayList<Command> commands = new ArrayList<>();
-        for (Command command : this.commands) {
-            int elevation = Toolbox.getElevation(command);
-            if (elevation != Elevation.NONE) {
-                if (elevation == Elevation.ALL || this.elevation >= elevation) {
-                    commands.add(command);
-                }
-            }
-        }
-        return commands;
-    }
-
-    /**
-     * This function returns the command getHistory.
-     *
-     * @return History
-     */
-    public ArrayList<String> getHistory() {
-        return history;
-    }
-
-    /**
      * This function returns the shell's elevation.
      *
      * @return Elevation
@@ -235,13 +268,31 @@ public class Quteshell {
     }
 
     /**
-     * This function begins the shell's communication with the client.
+     * This function returns the command list for the current elevation.
      *
-     * @return Quteshell instance
+     * @return Commands
      */
-    public Quteshell begin() {
+    public ArrayList<Command> getCommands() {
+        // Categorize commands by elevation
+        ArrayList<Command> commands = new ArrayList<>();
+        for (Command command : this.commands) {
+            int elevation = Commands.getElevation(command);
+            if (elevation != Elevation.NONE) {
+                if (elevation == Elevation.ALL || this.elevation >= elevation) {
+                    commands.add(command);
+                }
+            }
+        }
+        return commands;
+    }
 
-        return this;
+    /**
+     * This function returns the command getHistory.
+     *
+     * @return History
+     */
+    public ArrayList<String> getHistory() {
+        return history;
     }
 
     /**
@@ -249,39 +300,6 @@ public class Quteshell {
      */
     public void finish() {
         running = false;
-    }
-
-    /**
-     * This function prints to the host's console.
-     *
-     * @param text Text to print
-     */
-    private void print(String text) {
-        System.out.println(id + " - " + text);
-    }
-
-    /**
-     * This function if called when a new input is entered.
-     *
-     * @param input Input from the socket
-     */
-    private void read(String input) {
-        execute(input);
-        prompt(prompt, elevation);
-    }
-
-    /**
-     * This function generates random strings with a specific length.
-     *
-     * @param length Length of string
-     * @return Random string
-     */
-    private String random(int length) {
-        final String charset = "0123456789abcdefghijklmnopqrstuvwxyz";
-        if (length > 0) {
-            return charset.charAt(new Random().nextInt(charset.length())) + random(length - 1);
-        }
-        return "";
     }
 
     /**
@@ -295,15 +313,13 @@ public class Quteshell {
             String[] split = input.split(" ", 2);
             Command run = null;
             for (Command command : getCommands()) {
-                if (Toolbox.getName(command).equals(split[0])) {
+                if (Commands.getName(command).equals(split[0])) {
                     run = command;
                     break;
                 }
             }
             if (run != null) {
-                // Check if command is storable and store it in getHistory
-                if (Toolbox.isIncludable(run))
-                    history.add(input);
+                history.add(input);
                 // Execute the command
                 run.execute(this, split.length > 1 ? split[1] : null);
                 print("Command '" + split[0] + "' handled");
@@ -318,7 +334,7 @@ public class Quteshell {
     /**
      * This function clears the whole console and returns to top.
      */
-    public void clear() {
+    public void clearAll() {
         control("2J");
         control("H");
     }
@@ -326,22 +342,9 @@ public class Quteshell {
     /**
      * This function clears the whole line and returns to the beginning.
      */
-    public void clearline() {
+    public void clearLine() {
         control("2K");
         write("\r");
-    }
-
-    /**
-     * This function displays a prompt on the console.
-     *
-     * @param name      Name of shell
-     * @param elevation Elevation of shell
-     */
-    public void prompt(String name, int elevation) {
-        write(name, Color.LightGreen);
-        write(":");
-        write(String.valueOf(elevation), Color.LightBlue);
-        write("> ");
     }
 
     /**
@@ -400,11 +403,45 @@ public class Quteshell {
     }
 
     /**
+     * This function prints to the host's console.
+     *
+     * @param text Text to print
+     */
+    protected void print(String text) {
+        if (Configuration.getLogState())
+            System.out.println(id + " - " + text);
+    }
+
+    /**
+     * This function takes an input and executes it, then prints a prompt if enabled.
+     *
+     * @param input Input
+     */
+    protected void input(String input) {
+        execute(input);
+        if (Configuration.getPromptState())
+            prompt(prompt, elevation);
+    }
+
+    /**
+     * This function displays a prompt on the console.
+     *
+     * @param name      Name of shell
+     * @param elevation Elevation of shell
+     */
+    protected void prompt(String name, int elevation) {
+        write(name, Color.LightGreen);
+        write(":");
+        write(String.valueOf(elevation), Color.LightBlue);
+        write("> ");
+    }
+
+    /**
      * This funtion writes a control sequence to the console.
      *
      * @param sequence Control Sequence
      */
-    private void control(String sequence) {
+    protected void control(String sequence) {
         write("\033[" + sequence);
     }
 
@@ -413,7 +450,7 @@ public class Quteshell {
      *
      * @param color Color
      */
-    private void color(Color color) {
+    protected void color(Color color) {
         String output;
         switch (color) {
             case Black:
@@ -472,21 +509,17 @@ public class Quteshell {
     }
 
     /**
-     * Setter for the writer
+     * This function generates random strings with a specific length.
      *
-     * @param writer Writer
+     * @param length Length of string
+     * @return Random string
      */
-    protected void setWriter(BufferedWriter writer) {
-        this.writer = writer;
-    }
-
-    /**
-     * Getter for the writer
-     *
-     * @return Writer
-     */
-    protected BufferedWriter getWriter() {
-        return this.writer;
+    protected static String random(int length) {
+        final String charset = "0123456789abcdefghijklmnopqrstuvwxyz";
+        if (length > 0) {
+            return charset.charAt(new Random().nextInt(charset.length())) + random(length - 1);
+        }
+        return "";
     }
 
     /**

@@ -3,7 +3,6 @@ package quteshell.commands;
 import quteshell.Quteshell;
 import quteshell.command.Command;
 import quteshell.command.Elevation;
-import quteshell.command.Toolbox;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -29,17 +28,17 @@ public class Help implements Command {
             for (int c = 0; c < commands.size(); c += COLUMNS) {
                 for (int r = 0; r < COLUMNS; r++) {
                     if (c + r < commands.size()) {
-                        shell.write(Toolbox.getName(commands.get(c + r)));
+                        shell.write(Quteshell.Commands.getName(commands.get(c + r)));
                     }
                     shell.write("\t\t");
                 }
                 shell.writeln();
             }
         } else {
-            shell.writeln(Toolbox.getName(this) + " - '" + arguments + "'");
+            shell.writeln(Quteshell.Commands.getName(this) + " - '" + arguments + "'");
             Command help = null;
             for (Command command : commands) {
-                if (Toolbox.getName(command).equals(arguments)) {
+                if (Quteshell.Commands.getName(command).equals(arguments)) {
                     help = command;
                     break;
                 }

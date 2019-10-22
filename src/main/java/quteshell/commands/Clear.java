@@ -14,6 +14,6 @@ import quteshell.command.Elevation;
 public class Clear implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
-        shell.clear();
+        shell.clearAll();
     }
 }

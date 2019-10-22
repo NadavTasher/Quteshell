@@ -3,7 +3,6 @@ package quteshell.commands;
 import quteshell.Quteshell;
 import quteshell.command.Command;
 import quteshell.command.Elevation;
-import quteshell.command.Exclude;
 
 import java.util.ArrayList;
 
@@ -13,11 +12,11 @@ import java.util.ArrayList;
  **/
 
 @Elevation(Elevation.DEFAULT)
-@Exclude
 @Help.Description("The rerun command reruns the last command, or the given number of commands.")
 public class Rerun implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
+        shell.getHistory().remove(shell.getHistory().size() - 1);
         int rerun = 1;
         if (arguments != null) {
             try {
