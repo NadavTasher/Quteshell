@@ -61,6 +61,10 @@ publishing {
     repositories {
         maven {
             url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = (hasProperty('USERNAME') ? USERNAME : "")
+                password = (hasProperty('PASSWORD') ? PASSWORD : "")
+            }
         }
     }
 }
@@ -70,7 +74,7 @@ signing {
 }
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }
