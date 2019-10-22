@@ -186,7 +186,7 @@ public class Quteshell {
     private String identifier = random(Configuration.getIDLength());
 
     /**
-     * Default constructor without a prompt.
+     * Default constructor.
      *
      * @param socket Client-Server socket
      */
