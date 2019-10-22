@@ -1,0 +1,31 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.quteshell</groupId>
+    <artifactId>quteshell</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Quteshell</name>
+    <description>Quteshell is a Java based TCP/IP socketed shell library, for use in any project</description>
+    <url>https://github.com/NadavTasher/Quteshell</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://choosealicense.com/licenses/mit/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/NadavTasher/Quteshell.git</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+    </dependencies>
+</project>

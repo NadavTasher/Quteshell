@@ -14,19 +14,6 @@ jar {
     manifest {
         attributes("Manifest-Version": "1.0")
     }
-    project.version = ""
-}
-
-task buildLibrary(type: Jar) {
-    manifest.from jar.manifest
-    from {
-        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
-    } {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
-    }
-    with jar
 }
 
 dependencies {
