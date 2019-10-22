@@ -122,12 +122,22 @@ public class Quteshell {
             add(Quteshell.class);
         }
 
+        /**
+         * This function adds all the commands in the package of the base class.
+         *
+         * @param base Base Class
+         */
         public static void add(Class base) {
             Commands.commands.addAll(new Reflections(base).getSubTypesOf(Command.class));
         }
 
+        /**
+         * This function returns a copy of the command list.
+         *
+         * @return Command List
+         */
         public static ArrayList<Class<? extends Command>> getCommands() {
-            return commands;
+            return new ArrayList<>(commands);
         }
 
         /**
