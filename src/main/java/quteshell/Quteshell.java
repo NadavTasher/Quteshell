@@ -173,7 +173,7 @@ public class Quteshell {
     private ArrayList<Command> commands = new ArrayList<>();
     private ArrayList<String> history = new ArrayList<>();
     private String prompt = Configuration.getName();
-    private String id = random(Configuration.getIDLength());
+    private String identifier = random(Configuration.getIDLength());
 
     /**
      * Default constructor without a prompt.
@@ -236,8 +236,8 @@ public class Quteshell {
      *
      * @return ID
      */
-    public String getID() {
-        return id;
+    public String getIdentifier() {
+        return identifier;
     }
 
     /**
@@ -409,7 +409,7 @@ public class Quteshell {
      */
     protected void print(String text) {
         if (Configuration.getLogState())
-            System.out.println(id + " - " + text);
+            System.out.println(identifier + " - " + text);
     }
 
     /**

@@ -1,7 +1,7 @@
 package quteshell.commands;
 
-import quteshell.command.Command;
 import quteshell.Quteshell;
+import quteshell.command.Command;
 import quteshell.command.Elevation;
 
 /**
@@ -14,6 +14,6 @@ import quteshell.command.Elevation;
 public class ID implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
-        shell.writeln(shell.getID());
+        shell.writeln(shell.getIdentifier());
     }
 }
