@@ -19,6 +19,7 @@ jar {
 task buildLibrary(type: Jar) {
     manifest.from jar.manifest
     classifier = 'library'
+    baseName = ''
     from {
         configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
     } {
