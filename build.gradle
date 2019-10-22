@@ -12,7 +12,7 @@ repositories {
 
 jar {
     manifest {
-        attributes("Manifest-Version": version, "Main-Class": "Main")
+        attributes("Manifest-Version": version)
     }
 }
 
