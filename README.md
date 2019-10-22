@@ -11,7 +11,6 @@ Quteshell (with a spelling mistake) is a Java based TCP/IP socketed shell.
 Opening a shell:
 ```java
 Quteshell shell = new Quteshell(new ServerSocket(PORT).accept());
-shell.begin();
 ```
 
 Connecting to a shell:
