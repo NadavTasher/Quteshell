@@ -7,8 +7,6 @@ plugins {
 group = 'org.quteshell'
 version = '1.0.0'
 
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
@@ -50,6 +48,13 @@ publishing {
                         url = 'https://choosealicense.com/licenses/mit/'
                     }
                 }
+                developers {
+                    developer {
+                        id = 'NadavTasher'
+                        name = 'Nadav Tasher'
+                        email = 'tashernadav@gmail.com'
+                    }
+                }
                 scm {
                     connection = 'scm:git:git://github.com/NadavTasher/Quteshell.git'
                     developerConnection = 'scm:git:git://github.com/NadavTasher/Quteshell.git'
@@ -71,10 +76,4 @@ publishing {
 
 signing {
     sign publishing.publications.mavenJava
-}
-
-javadoc {
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
 }
