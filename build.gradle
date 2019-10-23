@@ -48,7 +48,7 @@ uploadArchives {
             }
 
             pom.project {
-                name = 'Quteshell'
+                name = rootProject.name
                 description = 'Quteshell is a Java based TCP/IP socketed shell library, for use in any project'
                 url = 'https://github.com/NadavTasher/Quteshell'
                 licenses {
