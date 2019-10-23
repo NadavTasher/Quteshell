@@ -47,7 +47,6 @@ uploadArchives {
             }
 
             pom.project {
-                packaging 'jar'
                 name = 'Quteshell'
                 description = 'Quteshell is a Java based TCP/IP socketed shell library, for use in any project'
                 url = 'https://github.com/NadavTasher/Quteshell'
