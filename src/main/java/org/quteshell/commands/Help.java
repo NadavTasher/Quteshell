@@ -1,8 +1,8 @@
 package org.quteshell.commands;
 
-import org.quteshell.command.Elevation;
+import org.quteshell.Elevation;
 import org.quteshell.Quteshell;
-import org.quteshell.command.Command;
+import org.quteshell.Command;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -28,17 +28,17 @@ public class Help implements Command {
             for (int c = 0; c < commands.size(); c += COLUMNS) {
                 for (int r = 0; r < COLUMNS; r++) {
                     if (c + r < commands.size()) {
-                        shell.write(Quteshell.Commands.getName(commands.get(c + r)));
+                        shell.write(Quteshell.Configuration.Commands.getName(commands.get(c + r)));
                     }
                     shell.write("\t\t");
                 }
                 shell.writeln();
             }
         } else {
-            shell.writeln(Quteshell.Commands.getName(this) + " - '" + arguments + "'");
+            shell.writeln(Quteshell.Configuration.Commands.getName(this) + " - '" + arguments + "'");
             Command help = null;
             for (Command command : commands) {
-                if (Quteshell.Commands.getName(command).equals(arguments)) {
+                if (Quteshell.Configuration.Commands.getName(command).equals(arguments)) {
                     help = command;
                     break;
                 }

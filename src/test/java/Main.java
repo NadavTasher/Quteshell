@@ -17,7 +17,7 @@ public class Main {
     private static boolean listening = true;
 
     public static void main(String[] args) {
-        Quteshell.Commands.add(TestCommand.class);
+        Quteshell.Configuration.Commands.add(TestCommand.class);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {

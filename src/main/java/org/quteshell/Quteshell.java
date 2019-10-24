@@ -1,7 +1,5 @@
 package org.quteshell;
 
-import org.quteshell.command.Command;
-import org.quteshell.command.Elevation;
 import org.quteshell.commands.*;
 
 import java.io.*;
@@ -17,7 +15,86 @@ import java.util.Random;
 
 public class Quteshell {
 
+    /**
+     * This class manages the configuration for the shells.
+     */
     public static class Configuration {
+
+        /**
+         * This class manages the commands for the shells.
+         */
+        public static class Commands {
+            private static ArrayList<Class<? extends Command>> commands = new ArrayList<>();
+
+            static {
+                add(Clear.class);
+                add(Echo.class);
+                add(Exit.class);
+                add(Help.class);
+                add(History.class);
+                add(ID.class);
+                add(Rerun.class);
+                add(Welcome.class);
+            }
+
+            /**
+             * This function adds a command to the command array.
+             *
+             * @param command Command's Class
+             */
+            public static void add(Class<? extends Command> command) {
+                Commands.commands.add(command);
+            }
+
+            /**
+             * This function removes a command from the command array.
+             *
+             * @param command Command's Class
+             */
+            public static void remove(Class<? extends Command> command) {
+                Commands.commands.remove(command);
+            }
+
+            /**
+             * This function returns a copy of the command list.
+             *
+             * @return Command List
+             */
+            public static ArrayList<Class<? extends Command>> getCommands() {
+                return new ArrayList<>(commands);
+            }
+
+            /**
+             * This function returns the execution name of a given command.
+             *
+             * @param command Command
+             * @return Name
+             */
+            public static String getName(Command command) {
+                return command.getClass().getSimpleName().toLowerCase();
+            }
+
+            /**
+             * This function returns the minimal elevation for a given command's execution.
+             *
+             * @param command Command
+             * @return Minimal Elevation
+             */
+            public static int getElevation(Command command) {
+                int minimal = Elevation.NONE;
+                for (Annotation annotation : command.getClass().getAnnotations()) {
+                    if (annotation instanceof Elevation) {
+                        int elevation = ((Elevation) annotation).value();
+                        if (minimal < 0 || minimal > elevation) {
+                            minimal = elevation;
+                        }
+                    }
+                }
+                return minimal;
+            }
+
+        }
+
         private static String name = "qute";
         private static boolean logState = false;
         private static boolean promptState = true;
@@ -115,77 +192,6 @@ public class Quteshell {
         }
     }
 
-    public static class Commands {
-        private static ArrayList<Class<? extends Command>> commands = new ArrayList<>();
-
-        static {
-            add(Clear.class);
-            add(Echo.class);
-            add(Exit.class);
-            add(Help.class);
-            add(History.class);
-            add(ID.class);
-            add(Rerun.class);
-            add(Welcome.class);
-        }
-
-        /**
-         * This function adds a command to the command array.
-         *
-         * @param command Command's Class
-         */
-        public static void add(Class<? extends Command> command) {
-            Commands.commands.add(command);
-        }
-
-        /**
-         * This function removes a command from the command array.
-         * @param command Command's Class
-         */
-        public static void remove(Class<? extends Command> command){
-            Commands.commands.remove(command);
-        }
-
-        /**
-         * This function returns a copy of the command list.
-         *
-         * @return Command List
-         */
-        public static ArrayList<Class<? extends Command>> getCommands() {
-            return new ArrayList<>(commands);
-        }
-
-        /**
-         * This function returns the execution name of a given command.
-         *
-         * @param command Command
-         * @return Name
-         */
-        public static String getName(Command command) {
-            return command.getClass().getSimpleName().toLowerCase();
-        }
-
-        /**
-         * This function returns the minimal elevation for a given command's execution.
-         *
-         * @param command Command
-         * @return Minimal Elevation
-         */
-        public static int getElevation(Command command) {
-            int minimal = Elevation.NONE;
-            for (Annotation annotation : command.getClass().getAnnotations()) {
-                if (annotation instanceof Elevation) {
-                    int elevation = ((Elevation) annotation).value();
-                    if (minimal < 0 || minimal > elevation) {
-                        minimal = elevation;
-                    }
-                }
-            }
-            return minimal;
-        }
-
-    }
-
     // Socket & I/O
     private Socket socket = null;
     private BufferedReader reader = null;
@@ -193,12 +199,12 @@ public class Quteshell {
     private Thread thread = null;
 
     // Shell
-    private boolean running = true;
-    private int elevation = Configuration.getBaseElevation();
-    private ArrayList<Command> commands = new ArrayList<>();
-    private ArrayList<String> history = new ArrayList<>();
-    private String prompt = Configuration.getName();
-    private String identifier = random(Configuration.getIDLength());
+    private boolean running = false;
+    private int elevation = Elevation.NONE;
+    private String prompt = null;
+    private String identifier = null;
+    private ArrayList<Command> commands = null;
+    private ArrayList<String> history = null;
 
     /**
      * Default constructor.
@@ -207,8 +213,14 @@ public class Quteshell {
      */
     public Quteshell(Socket socket) {
         this.socket = socket;
+        this.running = true;
+        this.elevation = Configuration.getBaseElevation();
+        this.prompt = Configuration.getName() != null ? Configuration.getName() : "@";
+        this.identifier = random(Configuration.getIDLength());
+        this.commands = new ArrayList<>();
+        this.history = new ArrayList<>();
         // Setup Commands
-        for (Class<? extends Command> command : Commands.getCommands()) {
+        for (Class<? extends Command> command : Configuration.Commands.getCommands()) {
             try {
                 this.commands.add(command.newInstance());
             } catch (Exception ignored) {
@@ -301,7 +313,7 @@ public class Quteshell {
         // Categorize commands by elevation
         ArrayList<Command> commands = new ArrayList<>();
         for (Command command : this.commands) {
-            int elevation = Commands.getElevation(command);
+            int elevation = Configuration.Commands.getElevation(command);
             if (elevation != Elevation.NONE) {
                 if (elevation == Elevation.ALL || this.elevation >= elevation) {
                     commands.add(command);
@@ -338,7 +350,7 @@ public class Quteshell {
             String[] split = input.split(" ", 2);
             Command run = null;
             for (Command command : getCommands()) {
-                if (Commands.getName(command).equals(split[0])) {
+                if (Configuration.Commands.getName(command).equals(split[0])) {
                     run = command;
                     break;
                 }
@@ -445,19 +457,16 @@ public class Quteshell {
     protected void input(String input) {
         execute(input);
         if (Configuration.getPromptState())
-            prompt(prompt, elevation);
+            prompt();
     }
 
     /**
      * This function displays a prompt on the console.
-     *
-     * @param name      Name of shell
-     * @param elevation Elevation of shell
      */
-    protected void prompt(String name, int elevation) {
-        write(name, Color.LightGreen);
+    protected void prompt() {
+        write(this.prompt, Color.LightGreen);
         write(":");
-        write(String.valueOf(elevation), Color.LightBlue);
+        write(String.valueOf(this.elevation), Color.LightBlue);
         write("> ");
     }
 

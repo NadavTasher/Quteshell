@@ -1,4 +1,4 @@
-package org.quteshell.command;
+package org.quteshell;
 
 import org.quteshell.Quteshell;
 

@@ -1,8 +1,8 @@
 package commands;
 
 import org.quteshell.Quteshell;
-import org.quteshell.command.Command;
-import org.quteshell.command.Elevation;
+import org.quteshell.Command;
+import org.quteshell.Elevation;
 import org.quteshell.commands.Help;
 
 @Elevation(Elevation.DEFAULT)

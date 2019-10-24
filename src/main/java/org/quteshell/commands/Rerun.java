@@ -1,8 +1,8 @@
 package org.quteshell.commands;
 
-import org.quteshell.command.Elevation;
+import org.quteshell.Elevation;
 import org.quteshell.Quteshell;
-import org.quteshell.command.Command;
+import org.quteshell.Command;
 
 import java.util.ArrayList;
 
