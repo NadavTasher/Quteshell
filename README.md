@@ -4,7 +4,7 @@ Quteshell (with a spelling mistake) is a Java based TCP/IP socketed shell librar
 
 ## Installation
 
-[Clone the repository](https://github.com/NadavTasher/Quteshell/archive/master.zip) or download the latest version from [Maven]() / [GitHub]()
+[Clone the repository](https://github.com/NadavTasher/Quteshell/archive/master.zip) or download / include the latest version from [Maven](https://search.maven.org/artifact/org.quteshell/quteshell/) 
 
 ## Usage
 
@@ -41,4 +41,4 @@ nc address port
 You are welcome to create pull requests and open issues!
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT License](https://choosealicense.com/licenses/mit/)
