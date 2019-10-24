@@ -12,7 +12,6 @@ repositories {
 }
 
 dependencies {
-    compile 'org.reflections:reflections:0.9.11'
 }
 
 task javadocJar(type: Jar) {

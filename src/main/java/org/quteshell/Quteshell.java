@@ -2,7 +2,7 @@ package org.quteshell;
 
 import org.quteshell.command.Command;
 import org.quteshell.command.Elevation;
-import org.reflections.Reflections;
+import org.quteshell.commands.*;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -119,16 +119,31 @@ public class Quteshell {
         private static ArrayList<Class<? extends Command>> commands = new ArrayList<>();
 
         static {
-            add(Quteshell.class);
+            add(Clear.class);
+            add(Echo.class);
+            add(Exit.class);
+            add(Help.class);
+            add(History.class);
+            add(ID.class);
+            add(Rerun.class);
+            add(Welcome.class);
         }
 
         /**
-         * This function adds all the commands in the package of the base class.
+         * This function adds a command to the command array.
          *
-         * @param base Base Class
+         * @param command Command's Class
          */
-        public static void add(Class base) {
-            Commands.commands.addAll(new Reflections(base).getSubTypesOf(Command.class));
+        public static void add(Class<? extends Command> command) {
+            Commands.commands.add(command);
+        }
+
+        /**
+         * This function removes a command from the command array.
+         * @param command Command's Class
+         */
+        public static void remove(Class<? extends Command> command){
+            Commands.commands.remove(command);
         }
 
         /**

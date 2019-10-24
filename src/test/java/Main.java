@@ -1,3 +1,4 @@
+import commands.TestCommand;
 import org.quteshell.Quteshell;
 
 import java.net.ServerSocket;
@@ -16,6 +17,7 @@ public class Main {
     private static boolean listening = true;
 
     public static void main(String[] args) {
+        Quteshell.Commands.add(TestCommand.class);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {
