@@ -32,7 +32,6 @@ public class Quteshell {
                 add(Exit.class);
                 add(Help.class);
                 add(History.class);
-                add(ID.class);
                 add(Welcome.class);
             }
 
