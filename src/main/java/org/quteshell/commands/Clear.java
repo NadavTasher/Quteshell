@@ -1,13 +1,13 @@
+/*
+  Copyright (c) 2019 Nadav Tasher
+  https://github.com/NadavTasher/Quteshell/
+ */
+
 package org.quteshell.commands;
 
-import org.quteshell.Elevation;
 import org.quteshell.Command;
+import org.quteshell.Elevation;
 import org.quteshell.Quteshell;
-
-/**
- * Copyright (c) 2019 Nadav Tasher
- * https://github.com/NadavTasher/Quteshell/
- **/
 
 @Elevation(Elevation.DEFAULT)
 @Help.Description("The clear command clears the client's terminal.")

@@ -1,3 +1,8 @@
+/*
+  Copyright (c) 2019 Nadav Tasher
+  https://github.com/NadavTasher/Quteshell/
+ */
+
 package org.quteshell;
 
 import org.quteshell.commands.*;
@@ -9,9 +14,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Copyright (c) 2019 Nadav Tasher
- * https://github.com/NadavTasher/Quteshell/
- **/
+ * This class is the main Quteshell element. It deals with console communication and command execution.
+ */
 
 public class Quteshell {
 
@@ -93,6 +97,9 @@ public class Quteshell {
 
         }
 
+        /**
+         * This interface is used to run an initialization command on a shell.
+         */
         public interface OnConnect {
             void onConnect(Quteshell shell);
         }

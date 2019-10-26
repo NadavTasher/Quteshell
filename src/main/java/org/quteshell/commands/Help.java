@@ -1,3 +1,8 @@
+/*
+  Copyright (c) 2019 Nadav Tasher
+  https://github.com/NadavTasher/Quteshell/
+ */
+
 package org.quteshell.commands;
 
 import org.quteshell.Elevation;
@@ -8,11 +13,6 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-/**
- * Copyright (c) 2019 Nadav Tasher
- * https://github.com/NadavTasher/Quteshell/
- **/
 
 @Elevation(Elevation.ALL)
 @Help.Description("The help command lists all commands, or a command description.")
