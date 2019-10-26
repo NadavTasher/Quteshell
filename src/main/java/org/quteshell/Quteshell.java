@@ -33,7 +33,6 @@ public class Quteshell {
                 add(Help.class);
                 add(History.class);
                 add(ID.class);
-                add(Rerun.class);
                 add(Welcome.class);
             }
 
@@ -95,11 +94,16 @@ public class Quteshell {
 
         }
 
+        public interface OnConnect {
+            void onConnect(Quteshell shell);
+        }
+
         private static String name = "qute";
         private static boolean logState = false;
         private static boolean promptState = true;
         private static int IDLength = 14;
         private static int baseElevation = Elevation.DEFAULT;
+        private static OnConnect onConnect = shell -> shell.input("welcome");
 
         /**
          * This function returns the shell's name.
@@ -190,6 +194,24 @@ public class Quteshell {
         public static void setPromptState(boolean promptState) {
             Configuration.promptState = promptState;
         }
+
+        /**
+         * This function returns the OnConnect interface which is ran on every shell when initialized.
+         *
+         * @return OnConnect
+         */
+        public static OnConnect getOnConnect() {
+            return onConnect;
+        }
+
+        /**
+         * This function sets the OnConnect interface which is ran on every shell when initialized.
+         *
+         * @param onConnect OnConnect
+         */
+        public static void setOnConnect(OnConnect onConnect) {
+            Configuration.onConnect = onConnect;
+        }
     }
 
     // Socket & I/O
@@ -237,8 +259,10 @@ public class Quteshell {
             print("I/O Setup Failed");
         } finally {
             thread = new Thread(() -> {
-                // Initialize a welcome message
-                input("welcome");
+                // Run the OnConnect
+                if (Configuration.getOnConnect() != null)
+                    Configuration.getOnConnect().onConnect(this);
+                // Wrap command listener with a try/catch
                 try {
                     // Begin listening
                     while (running) {
@@ -329,7 +353,7 @@ public class Quteshell {
      * @return History
      */
     public ArrayList<String> getHistory() {
-        return history;
+        return new ArrayList<>(history);
     }
 
     /**
