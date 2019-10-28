@@ -109,7 +109,7 @@ public class Quteshell {
         private static boolean promptState = true;
         private static int IDLength = 14;
         private static int baseElevation = Elevation.DEFAULT;
-        private static OnConnect onConnect = shell -> shell.input("welcome");
+        private static OnConnect onConnect = shell -> shell.execute("welcome");
 
         /**
          * This function returns the shell's name.
@@ -267,8 +267,12 @@ public class Quteshell {
             if (reader != null && writer != null) {
                 thread = new Thread(() -> {
                     // Run the OnConnect
-                    if (Configuration.getOnConnect() != null)
+                    if (Configuration.getOnConnect() != null) {
+                        // Run callback
                         Configuration.getOnConnect().onConnect(this);
+                        // Draw prompt
+                        prompt();
+                    }
                     // Wrap command listener with a try/catch
                     try {
                         // Begin listening
