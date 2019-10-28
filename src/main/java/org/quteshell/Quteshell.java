@@ -264,37 +264,39 @@ public class Quteshell {
             writer = null;
             print("I/O Setup Failed");
         } finally {
-            thread = new Thread(() -> {
-                // Run the OnConnect
-                if (Configuration.getOnConnect() != null)
-                    Configuration.getOnConnect().onConnect(this);
-                // Wrap command listener with a try/catch
-                try {
-                    // Begin listening
-                    while (running) {
-                        try {
-                            if (reader.ready()) {
-                                input(reader.readLine());
+            if (reader != null && writer != null) {
+                thread = new Thread(() -> {
+                    // Run the OnConnect
+                    if (Configuration.getOnConnect() != null)
+                        Configuration.getOnConnect().onConnect(this);
+                    // Wrap command listener with a try/catch
+                    try {
+                        // Begin listening
+                        while (running) {
+                            try {
+                                if (reader.ready()) {
+                                    input(reader.readLine());
+                                }
+                                Thread.sleep(10);
+                            } catch (IOException e) {
+                                print("Failed to read input stream.");
+                            } catch (InterruptedException e) {
+                                print("Failed to sleep.");
                             }
-                            Thread.sleep(10);
-                        } catch (IOException e) {
-                            print("Failed to read input stream.");
-                        } catch (InterruptedException e) {
-                            print("Failed to sleep.");
                         }
+                    } catch (Exception e) {
+                        print("Unrecoverable exception: " + e.toString());
                     }
-                } catch (Exception e) {
-                    print("Unrecoverable exception: " + e.toString());
-                }
-                // Finish listening
-                print("Finished");
-                try {
-                    this.socket.close();
-                } catch (Exception e) {
-                    print("Failed to close socket.");
-                }
-            });
-            thread.start();
+                    // Finish listening
+                    print("Finished");
+                    try {
+                        this.socket.close();
+                    } catch (Exception e) {
+                        print("Failed to close socket.");
+                    }
+                });
+                thread.start();
+            }
         }
     }
 
