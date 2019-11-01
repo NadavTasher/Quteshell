@@ -271,7 +271,8 @@ public class Quteshell {
                         // Run callback
                         Configuration.getOnConnect().onConnect(this);
                         // Draw prompt
-                        prompt();
+                        if (Configuration.getPromptState())
+                            prompt();
                     }
                     // Wrap command listener with a try/catch
                     try {
