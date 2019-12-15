@@ -14,9 +14,9 @@ import org.quteshell.Quteshell;
 public class Welcome implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
-        shell.writeln("╔═══════════════════════════════════╗");
-        shell.writeln("║       Welcome to Quteshell!       ║");
-        shell.writeln("║ You can type 'help' for commands. ║");
-        shell.writeln("╚═══════════════════════════════════╝");
+        shell.writeln("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+        shell.writeln("┃   Welcome to Quteshell   ┃");
+        shell.writeln("┃ Use 'help' for commands. ┃");
+        shell.writeln("┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
     }
 }

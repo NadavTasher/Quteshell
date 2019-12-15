@@ -5,8 +5,8 @@
 
 package org.quteshell.commands;
 
-import org.quteshell.Elevation;
 import org.quteshell.Command;
+import org.quteshell.Elevation;
 import org.quteshell.Quteshell;
 
 @Elevation(Elevation.DEFAULT)
@@ -14,6 +14,10 @@ import org.quteshell.Quteshell;
 public class Echo implements Command {
     @Override
     public void execute(Quteshell shell, String arguments) {
-        shell.writeln(arguments);
+        if (arguments != null) {
+            shell.writeln(arguments);
+        } else {
+            shell.writeln();
+        }
     }
 }
