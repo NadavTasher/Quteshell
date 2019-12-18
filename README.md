@@ -16,7 +16,7 @@ Quteshell shell = new Quteshell(new ServerSocket(PORT).accept());
 Basic shell server:
 ```java
 private static final int PORT = 7000;
-private static final ArrayList<Quteshell> quteshells = new ArrayList<>();
+private static final ArrayList<Shell> shells = new ArrayList<>();
 
 private static boolean listening = true;
 
@@ -24,7 +24,7 @@ public static void main(String[] args) {
     try {
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (listening) {
-            quteshells.add(new Quteshell(serverSocket.accept()));
+            shells.add(new Shell(serverSocket.accept()));
         }
     } catch (Exception e) {
         System.out.println("Host - " + e.getMessage());
