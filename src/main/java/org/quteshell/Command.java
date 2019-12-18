@@ -6,9 +6,31 @@
 package org.quteshell;
 
 /**
- * This interface is used to create command.
+ * This class is used to create commands.
  */
+@Elevation(Elevation.DEFAULT)
+public class Command {
 
-public interface Command {
-    void execute(Quteshell shell, String arguments);
+    /**
+     * Parent shell
+     */
+    protected Shell shell;
+
+    /**
+     * This is the default constructor for a command.
+     *
+     * @param shell Parent shell
+     */
+    public Command(Shell shell) {
+        this.shell = shell;
+    }
+
+    /**
+     * This function should get overridden, handles command execution.
+     *
+     * @param arguments Command arguments
+     */
+    public void execute(String arguments) {
+
+    }
 }

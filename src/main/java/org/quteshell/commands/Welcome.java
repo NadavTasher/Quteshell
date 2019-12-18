@@ -5,15 +5,20 @@
 
 package org.quteshell.commands;
 
-import org.quteshell.Elevation;
 import org.quteshell.Command;
-import org.quteshell.Quteshell;
+import org.quteshell.Elevation;
+import org.quteshell.Shell;
 
 @Elevation(Elevation.DEFAULT)
-@Help.Description("The welcome command displays a welcome message.")
-public class Welcome implements Command {
+@Help.Description("Displays a welcome message.")
+public class Welcome extends Command {
+
+    public Welcome(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         shell.writeln("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
         shell.writeln("┃   Welcome to Quteshell   ┃");
         shell.writeln("┃ Use 'help' for commands. ┃");

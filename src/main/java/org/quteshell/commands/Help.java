@@ -5,9 +5,9 @@
 
 package org.quteshell.commands;
 
-import org.quteshell.Elevation;
-import org.quteshell.Quteshell;
 import org.quteshell.Command;
+import org.quteshell.Elevation;
+import org.quteshell.Shell;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -15,46 +15,54 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 @Elevation(Elevation.ALL)
-@Help.Description("The help command lists all commands, or a command description.")
-public class Help implements Command {
+@Help.Description("Shows information about commands.")
+public class Help extends Command {
 
     private static final int COLUMNS = 3;
 
+    public Help(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         ArrayList<Command> commands = shell.getCommands();
         if (arguments == null) {
-            shell.writeln("List of available commands:");
+            shell.writeln("List of commands:");
             for (int c = 0; c < commands.size(); c += COLUMNS) {
                 for (int r = 0; r < COLUMNS; r++) {
                     if (c + r < commands.size()) {
-                        shell.write(Quteshell.Configuration.Commands.getName(commands.get(c + r)));
+                        shell.write(Shell.Configuration.Commands.getName(commands.get(c + r)));
                     }
                     shell.write("\t\t");
                 }
                 shell.writeln();
             }
+            shell.writeln("Type 'help [command]' for more help.");
         } else {
-            shell.writeln(Quteshell.Configuration.Commands.getName(this) + " - '" + arguments + "'");
             Command help = null;
             for (Command command : commands) {
-                if (Quteshell.Configuration.Commands.getName(command).equals(arguments)) {
+                if (Shell.Configuration.Commands.getName(command).equals(arguments)) {
                     help = command;
                     break;
                 }
             }
-            String text;
             if (help != null) {
-                text = "No description available";
+                String text = null;
                 for (Annotation annotation : help.getClass().getAnnotations()) {
                     if (annotation instanceof Description) {
                         text = ((Description) annotation).value();
                     }
                 }
+                if (text != null) {
+                    shell.writeln("Showing help for '" + arguments + "':");
+                    shell.writeln(text);
+                } else {
+                    shell.writeln("No description available for '" + arguments + "'");
+                }
             } else {
-                text = "Command not found";
+                shell.writeln("Command not found");
             }
-            shell.writeln(text);
         }
     }
 

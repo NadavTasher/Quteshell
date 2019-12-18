@@ -5,15 +5,20 @@
 
 package org.quteshell.commands;
 
-import org.quteshell.Elevation;
 import org.quteshell.Command;
-import org.quteshell.Quteshell;
+import org.quteshell.Elevation;
+import org.quteshell.Shell;
 
 @Elevation(Elevation.ALL)
-@Help.Description("The exit command closes the shell and disconnects.")
-public class Exit implements Command {
+@Help.Description("Closes the shell and disconnects.")
+public class Exit extends Command {
+
+    public Exit(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         shell.finish();
     }
 }

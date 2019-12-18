@@ -5,15 +5,20 @@
 
 package org.quteshell.commands;
 
-import org.quteshell.Quteshell;
-import org.quteshell.Command;
 import org.quteshell.Elevation;
+import org.quteshell.Shell;
+import org.quteshell.Command;
 
 @Elevation(Elevation.DEFAULT)
-@Help.Description("The history command lists the previously ran commands.")
-public class History implements Command {
+@Help.Description("Lists the previously ran commands.")
+public class History extends Command {
+
+    public History(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         for (int h = 0; h < shell.getHistory().size(); h++) {
             shell.write(h + "\t");
             shell.writeln(shell.getHistory().get(h));

@@ -7,13 +7,18 @@ package org.quteshell.commands;
 
 import org.quteshell.Command;
 import org.quteshell.Elevation;
-import org.quteshell.Quteshell;
+import org.quteshell.Shell;
 
 @Elevation(Elevation.DEFAULT)
-@Help.Description("The clear command clears the client's terminal.")
-public class Clear implements Command {
+@Help.Description("Clears the client's terminal.")
+public class Clear extends Command {
+
+    public Clear(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         shell.clearAll();
     }
 }

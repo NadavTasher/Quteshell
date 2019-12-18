@@ -7,17 +7,20 @@ package org.quteshell.commands;
 
 import org.quteshell.Command;
 import org.quteshell.Elevation;
-import org.quteshell.Quteshell;
+import org.quteshell.Shell;
 
 @Elevation(Elevation.DEFAULT)
-@Help.Description("The echo command prints back what you type in.")
-public class Echo implements Command {
+@Help.Description("Prints the input.")
+public class Echo extends Command {
+
+    public Echo(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         if (arguments != null) {
             shell.writeln(arguments);
-        } else {
-            shell.writeln();
         }
     }
 }

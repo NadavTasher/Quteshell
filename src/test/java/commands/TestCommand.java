@@ -1,15 +1,18 @@
 package commands;
 
-import org.quteshell.Quteshell;
+import org.quteshell.Shell;
 import org.quteshell.Command;
-import org.quteshell.Elevation;
 import org.quteshell.commands.Help;
 
-@Elevation(Elevation.DEFAULT)
 @Help.Description("This command is a test command")
-public class TestCommand implements Command {
+public class TestCommand extends Command {
+
+    public TestCommand(Shell shell) {
+        super(shell);
+    }
+
     @Override
-    public void execute(Quteshell shell, String arguments) {
+    public void execute(String arguments) {
         shell.writeln("This is a test command.");
     }
 }

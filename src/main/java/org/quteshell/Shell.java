@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * This class is the main Quteshell element. It deals with console communication and command execution.
+ * This class is the main Shell element. It deals with console communication and command execution.
  */
 
-public class Quteshell {
+public class Shell {
 
     /**
      * This class manages the configuration for the shells.
@@ -101,7 +101,7 @@ public class Quteshell {
          * This interface is used to run an initialization command on a shell.
          */
         public interface OnConnect {
-            void onConnect(Quteshell shell);
+            void onConnect(Shell shell);
         }
 
         private static String name = "qute";
@@ -239,7 +239,7 @@ public class Quteshell {
      *
      * @param socket Client-Server socket
      */
-    public Quteshell(Socket socket) {
+    public Shell(Socket socket) {
         this.socket = socket;
         this.running = true;
         this.elevation = Configuration.getBaseElevation();
@@ -250,8 +250,9 @@ public class Quteshell {
         // Setup Commands
         for (Class<? extends Command> command : Configuration.Commands.getCommands()) {
             try {
-                this.commands.add(command.newInstance());
+                this.commands.add(command.getDeclaredConstructor(Shell.class).newInstance(this));
             } catch (Exception ignored) {
+                ignored.printStackTrace();
             }
         }
         // Setup I/O
@@ -306,7 +307,7 @@ public class Quteshell {
     }
 
     /**
-     * This function returns the Quteshell ID.
+     * This function returns the Shell ID.
      *
      * @return ID
      */
@@ -395,7 +396,7 @@ public class Quteshell {
             if (run != null) {
                 history.add(input);
                 // Execute the command
-                run.execute(this, split.length > 1 ? split[1] : null);
+                run.execute(split.length > 1 ? split[1] : null);
                 print("Command '" + split[0] + "' handled");
             } else {
                 // Write an error message to the socket
