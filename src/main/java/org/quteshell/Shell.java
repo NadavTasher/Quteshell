@@ -107,6 +107,7 @@ public class Shell {
         private static String name = "qute";
         private static boolean logState = false;
         private static boolean promptState = true;
+        private static boolean colorState = true;
         private static int IDLength = 14;
         private static int baseElevation = Elevation.DEFAULT;
         private static OnConnect onConnect = shell -> shell.execute("welcome");
@@ -199,6 +200,24 @@ public class Shell {
          */
         public static void setPromptState(boolean promptState) {
             Configuration.promptState = promptState;
+        }
+
+        /**
+         * This function returns the color state.
+         *
+         * @return Color State
+         */
+        public static boolean getColorState() {
+            return colorState;
+        }
+
+        /**
+         * This function sets the color state.
+         *
+         * @param colorState Color State
+         */
+        public static void setColorState(boolean colorState) {
+            Configuration.colorState = colorState;
         }
 
         /**
@@ -444,9 +463,13 @@ public class Shell {
      * @param color  Color
      */
     public void write(String output, Color color) {
-        color(color);
-        write(output);
-        color(Color.None);
+        if (Configuration.getColorState()) {
+            color(color);
+            write(output);
+            color(Color.None);
+        } else {
+            write(output);
+        }
     }
 
     /**
