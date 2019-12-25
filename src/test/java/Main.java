@@ -17,6 +17,8 @@ public class Main {
     private static boolean listening = true;
 
     public static void main(String[] args) {
+        Shell.Configuration.setLogState(true);
+        Shell.Configuration.setColorState(false);
         Shell.Configuration.Commands.add(TestCommand.class);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
