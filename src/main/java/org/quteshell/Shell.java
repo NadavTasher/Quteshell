@@ -31,7 +31,6 @@ public class Shell {
             private static ArrayList<Class<? extends Command>> commands = new ArrayList<>();
 
             static {
-                add(Clear.class);
                 add(Echo.class);
                 add(Exit.class);
                 add(Help.class);
@@ -167,7 +166,7 @@ public class Shell {
         }
 
         /**
-         * This function returns the logState state.
+         * This function returns the log state.
          *
          * @return Log State
          */
@@ -381,7 +380,7 @@ public class Shell {
     }
 
     /**
-     * This function returns the command getHistory.
+     * This function returns the command history.
      *
      * @return History
      */
@@ -402,7 +401,7 @@ public class Shell {
      * @param input Input from the socket
      */
     public void execute(String input) {
-        print("Evaluating '" + input + "'");
+        print("Running '" + input + "'");
         if (input.length() > 0) {
             String[] split = input.split(" ", 2);
             Command run = null;
@@ -423,22 +422,6 @@ public class Shell {
                 print("Command '" + split[0] + "' not handled");
             }
         }
-    }
-
-    /**
-     * This function clears the whole console and returns to top.
-     */
-    public void clearAll() {
-        control("2J");
-        control("H");
-    }
-
-    /**
-     * This function clears the whole line and returns to the beginning.
-     */
-    public void clearLine() {
-        control("2K");
-        write("\r");
     }
 
     /**
@@ -532,15 +515,6 @@ public class Shell {
     }
 
     /**
-     * This funtion writes a control sequence to the console.
-     *
-     * @param sequence Control Sequence
-     */
-    protected void control(String sequence) {
-        write("\033[" + sequence);
-    }
-
-    /**
      * This function changes the color of the console.
      *
      * @param color Color
@@ -600,7 +574,7 @@ public class Shell {
             default:
                 output = "0";
         }
-        control(output + "m");
+        write("\033[" + output + "m");
     }
 
     /**
