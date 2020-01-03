@@ -462,7 +462,7 @@ public class Shell {
      */
     public void writeln(String output) {
         write(output);
-        write("\n");
+        write("\r\n");
     }
 
     /**
@@ -473,7 +473,7 @@ public class Shell {
      */
     public void writeln(String output, Color color) {
         write(output, color);
-        write("\n");
+        write("\r\n");
     }
 
     /**
