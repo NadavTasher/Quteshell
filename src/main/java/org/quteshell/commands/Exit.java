@@ -9,7 +9,7 @@ import org.quteshell.Command;
 import org.quteshell.Elevation;
 import org.quteshell.Shell;
 
-@Elevation(Elevation.ALL)
+@Elevation
 @Help.Description("Closes the shell and disconnects.")
 public class Exit extends Command {
 

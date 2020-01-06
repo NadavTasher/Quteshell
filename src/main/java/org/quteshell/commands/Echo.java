@@ -9,7 +9,7 @@ import org.quteshell.Command;
 import org.quteshell.Elevation;
 import org.quteshell.Shell;
 
-@Elevation(Elevation.DEFAULT)
+@Elevation
 @Help.Description("Prints the input.")
 public class Echo extends Command {
 

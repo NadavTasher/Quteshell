@@ -14,7 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-@Elevation(Elevation.ALL)
+@Elevation
 @Help.Description("Shows information about commands.")
 public class Help extends Command {
 
@@ -26,7 +26,7 @@ public class Help extends Command {
 
     @Override
     public void execute(String arguments) {
-        ArrayList<Command> commands = shell.getCommands();
+        ArrayList<Command> commands = shell.();
         if (arguments == null) {
             shell.writeln("List of commands:");
             for (int c = 0; c < commands.size(); c += COLUMNS) {
@@ -38,7 +38,6 @@ public class Help extends Command {
                 }
                 shell.writeln();
             }
-            shell.writeln("Type 'help [command]' for more help.");
         } else {
             Command help = null;
             for (Command command : commands) {

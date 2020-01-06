@@ -1,4 +1,5 @@
 import commands.TestCommand;
+import org.quteshell.Configuration;
 import org.quteshell.Shell;
 
 import java.net.ServerSocket;
@@ -17,13 +18,14 @@ public class Main {
     private static boolean listening = true;
 
     public static void main(String[] args) {
-        Shell.Configuration.setLogState(true);
-        Shell.Configuration.setColorState(false);
-        Shell.Configuration.Commands.add(TestCommand.class);
+        Configuration configuration = new Configuration();
+        configuration.setLogEnabled(true);
+        configuration.setANSIEnabled(true);
+        configuration.addCommand(TestCommand.class);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {
-                shells.add(new Shell(serverSocket.accept()));
+                shells.add(new Shell(serverSocket.accept(), configuration));
             }
         } catch (Exception e) {
             System.out.println("Host - " + e.getMessage());

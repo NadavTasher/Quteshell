@@ -14,8 +14,8 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Elevation {
-    int DEFAULT = 1;
-    int ALL = 0;
+    int DEFAULT = 0;
     int NONE = -1;
-    int value();
+
+    int value() default DEFAULT;
 }
