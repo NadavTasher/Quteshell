@@ -106,7 +106,16 @@ public class Shell {
     }
 
     /**
-     * This function returns the Shell ID.
+     * Returns the command list.
+     *
+     * @return Command list
+     */
+    public ArrayList<Command> getCommands() {
+        return new ArrayList<>(commands);
+    }
+
+    /**
+     * Returns the Shell ID.
      *
      * @return ID
      */
@@ -115,7 +124,7 @@ public class Shell {
     }
 
     /**
-     * This function returns the shell's elevation.
+     * Returns the shell's elevation.
      *
      * @return Elevation
      */
@@ -124,7 +133,7 @@ public class Shell {
     }
 
     /**
-     * This function sets the shell's elevation.
+     * Sets the shell's elevation.
      *
      * @param elevation Elevation
      */
@@ -133,7 +142,7 @@ public class Shell {
     }
 
     /**
-     * This function returns whether the shell is running.
+     * Returns whether the shell is running.
      *
      * @return Running
      */
@@ -142,7 +151,7 @@ public class Shell {
     }
 
     /**
-     * This function returns the command history.
+     * Returns the command history.
      *
      * @return History
      */
@@ -151,14 +160,14 @@ public class Shell {
     }
 
     /**
-     * This function stops the shell.
+     * Stops the shell.
      */
     public void finish() {
         this.running = false;
     }
 
     /**
-     * This function evaluates the input and executes the command.
+     * Evaluates the input and executes the command.
      *
      * @param input Input from the socket
      */
@@ -170,14 +179,16 @@ public class Shell {
             // Split input
             String[] split = input.split(" ", 2);
             for (Command command : this.commands) {
-                if (this.elevation >= command.getClass().getAnnotation(Elevation.class).value()) {
-                    if (command.getClass().getSimpleName().toLowerCase().equals(split[0])) {
-                        // Execute the command
-                        command.execute(split.length > 1 ? split[1] : null);
-                        // Log execution
-                        print("Command '" + split[0] + "' handled");
-                        // Exit the function
-                        return;
+                if (command.getClass().isAnnotationPresent(Elevation.class)) {
+                    if (this.elevation >= command.getClass().getAnnotation(Elevation.class).value()) {
+                        if (command.getClass().getSimpleName().toLowerCase().equals(split[0])) {
+                            // Execute the command
+                            command.execute(split.length > 1 ? split[1] : null);
+                            // Log execution
+                            print("Command '" + split[0] + "' handled");
+                            // Exit the function
+                            return;
+                        }
                     }
                 }
             }
@@ -189,7 +200,7 @@ public class Shell {
     }
 
     /**
-     * This function writes an output to the console.
+     * Writes an output to the console.
      *
      * @param output Output
      */
@@ -206,7 +217,7 @@ public class Shell {
     }
 
     /**
-     * This function writes an output with color to the console.
+     * Writes an output with color to the console.
      *
      * @param output Output
      * @param color  Color
@@ -218,7 +229,7 @@ public class Shell {
     }
 
     /**
-     * This function writes an output with a newline to the console.
+     * Writes an output with a newline to the console.
      *
      * @param output Ouput
      */
@@ -228,7 +239,7 @@ public class Shell {
     }
 
     /**
-     * This function writes an output with a color and a newline to the console.
+     * Writes an output with a color and a newline to the console.
      *
      * @param output Output
      * @param color  Color
@@ -239,14 +250,14 @@ public class Shell {
     }
 
     /**
-     * This function prints a newline to the console.
+     * Prints a newline to the console.
      */
     public void writeln() {
         writeln("");
     }
 
     /**
-     * This function prints to the host's console.
+     * Prints to the host's console.
      *
      * @param text Text to print
      */
@@ -256,7 +267,7 @@ public class Shell {
     }
 
     /**
-     * This function takes an input and executes it, then prints a prompt if enabled.
+     * Takes an input and executes it, then prints a prompt. (if enabled)
      *
      * @param input Input
      */
@@ -267,7 +278,7 @@ public class Shell {
     }
 
     /**
-     * This function displays a prompt on the console.
+     * Displays a prompt on the console.
      */
     protected void prompt() {
         write(this.configuration.getName(), Color.LightGreen);
@@ -277,7 +288,7 @@ public class Shell {
     }
 
     /**
-     * This function changes the color of the console.
+     * Changes the color of the console. (if enabled)
      *
      * @param color Color
      */
@@ -342,7 +353,7 @@ public class Shell {
     }
 
     /**
-     * This function generates random strings with a specific length.
+     * Generates random strings with a specific length.
      *
      * @param length Length of string
      * @return Random string

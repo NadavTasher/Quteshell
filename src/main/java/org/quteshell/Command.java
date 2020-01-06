@@ -19,7 +19,7 @@ public class Command {
     protected Shell shell;
 
     /**
-     * This is the default constructor for a command.
+     * Default constructor.
      *
      * @param shell Parent shell
      */

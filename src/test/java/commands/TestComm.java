@@ -1,15 +1,15 @@
 package commands;
 
+import org.quteshell.Command;
 import org.quteshell.Elevation;
 import org.quteshell.Shell;
-import org.quteshell.Command;
 import org.quteshell.commands.Help;
 
 @Elevation
 @Help.Description("This command is a test command")
-public class TestCommand extends Command {
+public class TestComm extends Command {
 
-    public TestCommand(Shell shell) {
+    public TestComm(Shell shell) {
         super(shell);
     }
 

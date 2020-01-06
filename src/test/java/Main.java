@@ -1,3 +1,4 @@
+import commands.TestComm;
 import commands.TestCommand;
 import org.quteshell.Configuration;
 import org.quteshell.Shell;
@@ -22,6 +23,7 @@ public class Main {
         configuration.setLogEnabled(true);
         configuration.setANSIEnabled(true);
         configuration.addCommand(TestCommand.class);
+        configuration.addCommand(TestComm.class);
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {

@@ -9,7 +9,6 @@ import org.quteshell.Command;
 import org.quteshell.Elevation;
 import org.quteshell.Shell;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -18,49 +17,34 @@ import java.util.ArrayList;
 @Help.Description("Shows information about commands.")
 public class Help extends Command {
 
-    private static final int COLUMNS = 3;
-
     public Help(Shell shell) {
         super(shell);
     }
 
     @Override
     public void execute(String arguments) {
-        ArrayList<Command> commands = shell.();
+        ArrayList<Command> commands = shell.getCommands();
         if (arguments == null) {
             shell.writeln("List of commands:");
-            for (int c = 0; c < commands.size(); c += COLUMNS) {
-                for (int r = 0; r < COLUMNS; r++) {
-                    if (c + r < commands.size()) {
-                        shell.write(Shell.Configuration.Commands.getName(commands.get(c + r)));
-                    }
-                    shell.write("\t\t");
-                }
-                shell.writeln();
-            }
-        } else {
-            Command help = null;
             for (Command command : commands) {
-                if (Shell.Configuration.Commands.getName(command).equals(arguments)) {
-                    help = command;
-                    break;
-                }
-            }
-            if (help != null) {
-                String text = null;
-                for (Annotation annotation : help.getClass().getAnnotations()) {
-                    if (annotation instanceof Description) {
-                        text = ((Description) annotation).value();
+                if (command.getClass().isAnnotationPresent(Elevation.class)) {
+                    if (shell.getElevation() >= command.getClass().getAnnotation(Elevation.class).value()) {
+                        // Write command name
+                        shell.write(command.getClass().getSimpleName().toLowerCase(), Shell.Color.LightOrange);
+                        // Write tabs
+                        shell.write("\t");
+                        // Write another tab is name is shorter then 8 characters
+                        if (command.getClass().getSimpleName().toLowerCase().length()<8)
+                            shell.write("\t");
+                        // Write command description
+                        if (command.getClass().isAnnotationPresent(Description.class))
+                            shell.write(command.getClass().getAnnotation(Description.class).value());
+                        else
+                            shell.write("No description.");
+                        // Newline
+                        shell.writeln();
                     }
                 }
-                if (text != null) {
-                    shell.writeln("Showing help for '" + arguments + "':");
-                    shell.writeln(text);
-                } else {
-                    shell.writeln("No description available for '" + arguments + "'");
-                }
-            } else {
-                shell.writeln("Command not found");
             }
         }
     }
