@@ -16,5 +16,6 @@ public class TestCommand extends Command {
     @Override
     public void execute(String arguments) {
         shell.writeln("This is a test command.");
+        shell.writeln("\007");
     }
 }

@@ -21,10 +21,11 @@ private static final ArrayList<Shell> shells = new ArrayList<>();
 private static boolean listening = true;
 
 public static void main(String[] args) {
+    Configuration configuration = new Configuration();
     try {
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (listening) {
-            shells.add(new Shell(serverSocket.accept()));
+            shells.add(new Shell(serverSocket.accept(), configuration));
         }
     } catch (Exception e) {
         System.out.println("Host - " + e.getMessage());

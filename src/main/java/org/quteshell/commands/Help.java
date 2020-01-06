@@ -24,26 +24,24 @@ public class Help extends Command {
     @Override
     public void execute(String arguments) {
         ArrayList<Command> commands = shell.getCommands();
-        if (arguments == null) {
-            shell.writeln("List of commands:");
-            for (Command command : commands) {
-                if (command.getClass().isAnnotationPresent(Elevation.class)) {
-                    if (shell.getElevation() >= command.getClass().getAnnotation(Elevation.class).value()) {
-                        // Write command name
-                        shell.write(command.getClass().getSimpleName().toLowerCase(), Shell.Color.LightOrange);
-                        // Write tabs
+        shell.writeln("List of commands:");
+        for (Command command : commands) {
+            if (command.getClass().isAnnotationPresent(Elevation.class)) {
+                if (shell.getElevation() >= command.getClass().getAnnotation(Elevation.class).value()) {
+                    // Write command name
+                    shell.write(command.getClass().getSimpleName().toLowerCase(), Shell.Color.LightOrange);
+                    // Write tabs
+                    shell.write("\t");
+                    // Write another tab is name is shorter then 8 characters
+                    if (command.getClass().getSimpleName().toLowerCase().length() < 8)
                         shell.write("\t");
-                        // Write another tab is name is shorter then 8 characters
-                        if (command.getClass().getSimpleName().toLowerCase().length()<8)
-                            shell.write("\t");
-                        // Write command description
-                        if (command.getClass().isAnnotationPresent(Description.class))
-                            shell.write(command.getClass().getAnnotation(Description.class).value());
-                        else
-                            shell.write("No description.");
-                        // Newline
-                        shell.writeln();
-                    }
+                    // Write command description
+                    if (command.getClass().isAnnotationPresent(Description.class))
+                        shell.write(command.getClass().getAnnotation(Description.class).value());
+                    else
+                        shell.write("No description.");
+                    // Newline
+                    shell.writeln();
                 }
             }
         }

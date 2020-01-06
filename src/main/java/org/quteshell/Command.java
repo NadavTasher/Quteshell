@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
 /**
  * This class is used to create commands.
  */
-@Elevation(Elevation.DEFAULT)
+@Elevation
 public class Command {
 
     /**

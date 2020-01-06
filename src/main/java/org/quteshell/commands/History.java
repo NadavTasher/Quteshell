@@ -9,7 +9,7 @@ import org.quteshell.Elevation;
 import org.quteshell.Shell;
 import org.quteshell.Command;
 
-@Elevation(Elevation.DEFAULT)
+@Elevation
 @Help.Description("Lists the previously ran commands.")
 public class History extends Command {
 
