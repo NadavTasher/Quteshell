@@ -33,6 +33,7 @@ public class Shell {
      * Default constructor.
      *
      * @param socket Client-Server socket
+     * @param configuration Shell configuration
      */
     public Shell(Socket socket, Configuration configuration) {
         // Change running state
