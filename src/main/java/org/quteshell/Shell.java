@@ -35,18 +35,19 @@ public class Shell {
      * @param socket Client-Server socket
      */
     public Shell(Socket socket, Configuration configuration) {
+        // Change running state
+        this.running = false;
         if (socket != null &&
                 configuration != null) {
             // Parameters
             this.socket = socket;
             this.configuration = configuration;
             // Defaults
-            this.running = true;
             this.elevation = Elevation.DEFAULT;
             this.identifier = random(14);
             this.commands = new ArrayList<>();
             this.history = new ArrayList<>();
-            // Setup Commands
+            // Setup commands
             for (Class<? extends Command> command : configuration.getCommands()) {
                 try {
                     this.commands.add(command.getDeclaredConstructor(Shell.class).newInstance(this));
@@ -55,6 +56,8 @@ public class Shell {
             }
             // Setup I/O
             try {
+                // Change running state
+                this.running = false;
                 reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
                 writer = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
                 print("I/O Setup Completed");
@@ -63,8 +66,12 @@ public class Shell {
                 writer = null;
                 print("I/O Setup Failed");
             } finally {
+                // Change running state
+                this.running = false;
                 if (reader != null && writer != null) {
                     thread = new Thread(() -> {
+                        // Change running state
+                        this.running = true;
                         // Run the connection callback
                         if (this.configuration.getOnConnect() != null) {
                             // Run callback
@@ -91,6 +98,8 @@ public class Shell {
                         } catch (Exception e) {
                             print("Unrecoverable exception: " + e.toString());
                         }
+                        // Change running state
+                        this.running = false;
                         // Finish listening
                         print("Finished");
                         try {
@@ -206,12 +215,11 @@ public class Shell {
      */
     public void write(String output) {
         if (this.running) {
-            if (this.writer != null) {
-                try {
-                    this.writer.write(output);
-                    this.writer.flush();
-                } catch (IOException ignored) {
-                }
+            try {
+                this.writer.write(output);
+                this.writer.flush();
+            } catch (IOException ignored) {
+                this.finish();
             }
         }
     }
